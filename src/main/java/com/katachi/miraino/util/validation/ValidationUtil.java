@@ -6,6 +6,8 @@ import org.apache.commons.validator.routines.FloatValidator;
 import org.apache.commons.validator.routines.IntegerValidator;
 import org.apache.commons.validator.routines.RegexValidator;
 
+import settings.SecuritySettings;
+
 /**
  * バリデーションユーティリティクラス
  */
@@ -51,7 +53,7 @@ public class ValidationUtil {
 	 * @return true:正しい、false:正しくない
 	 */
 	public static final boolean isPassword(String password) {
-		RegexValidator regex = new RegexValidator("^[0-9a-zA-Z]{8,20}$");
+		RegexValidator regex = new RegexValidator(SecuritySettings.PASSWORD_REGEXP_STRING);
 		return regex.isValid(password);
 	}
 
