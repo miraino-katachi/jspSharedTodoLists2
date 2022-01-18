@@ -35,11 +35,11 @@
 				<c:forEach var="item" items="${items}">
 					<tr
 						<c:choose>
-							<c:when test="${item.expirationDate.before(today)}">
-								class="alert alert-danger"
-							</c:when>
 							<c:when test="${item.finishedDate != null}">
 								class="finished"
+							</c:when>
+							<c:when test="${item.expirationDate.before(today)}">
+								class="alert alert-danger"
 							</c:when>
 						</c:choose>
 					>
