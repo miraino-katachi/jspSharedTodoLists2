@@ -14,9 +14,10 @@ public class TodoItem {
 		TodoItemDAO dao = new TodoItemDAO();
 		List<TodoItemModel> model;
 		try {
-			model = dao.findByUserId(DBConnection.getInstance(), 1);
+			try (DBConnection db = new DBConnection()) {
+				model = dao.findByUserId(db.getInstance(), 1);
+			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			return;
 		}

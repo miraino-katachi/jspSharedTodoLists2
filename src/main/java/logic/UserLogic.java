@@ -14,41 +14,49 @@ import model.UserModel;
  */
 public class UserLogic {
 
-	/** データベースコネクション */
-	private Connection connection;
-
-	public UserLogic() throws ClassNotFoundException, SQLException {
-		this.connection = DBConnection.getInstance();
-	}
-	
 	/**
 	 * ユーザーを1件追加します。
 	 * @param model ユーザーモデルクラス
 	 * @return 実行結果 1:成功、0:失敗、その他:エラーコード(SQLSTATE)
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public int create(UserModel model) {
-		UserDAO dao = new UserDAO();
-		return dao.create(this.connection, model);
+	public int create(UserModel model) throws ClassNotFoundException, SQLException {
+		try (DBConnection db = new DBConnection()) {
+			Connection conn = db.getInstance();
+			UserDAO dao = new UserDAO();
+			return dao.create(conn, model);
+		}
 	}
 
 	/**
 	 * ユーザーを全件取得します。
 	 * @return 検索結果（ユーザーモデルのリスト）
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public List<UserModel> find() {
-		UserDAO dao = new UserDAO();
-		List<UserModel> list = dao.findAll(this.connection);
-		return list;
+	public List<UserModel> find() throws ClassNotFoundException, SQLException {
+		try (DBConnection db = new DBConnection()) {
+			Connection conn = db.getInstance();
+			UserDAO dao = new UserDAO();
+			List<UserModel> list = dao.findAll(conn);
+			return list;
+		}
 	}
 
 	/**
 	 * 指定ユーザーIDのユーザーを取得します。
 	 * @param userId ユーザーID
 	 * @return 検索結果（ユーザーモデル）
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public UserModel find(int userId) {
-		UserDAO dao = new UserDAO();
-		return dao.findOne(this.connection, userId);
+	public UserModel find(int userId) throws ClassNotFoundException, SQLException {
+		try (DBConnection db = new DBConnection()) {
+			Connection conn = db.getInstance();
+			UserDAO dao = new UserDAO();
+			return dao.findOne(conn, userId);
+		}
 	}
 
 	/**
@@ -56,19 +64,29 @@ public class UserLogic {
 	 * @param email E-mailアドレス
 	 * @param password パスワード
 	 * @return 検索結果（ユーザーモデル）
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public UserModel find(String email, String password) {
-		UserDAO dao = new UserDAO();
-		return dao.findOne(this.connection, email, password);
+	public UserModel find(String email, String password) throws ClassNotFoundException, SQLException {
+		try (DBConnection db = new DBConnection()) {
+			Connection conn = db.getInstance();
+			UserDAO dao = new UserDAO();
+			return dao.findOne(conn, email, password);
+		}
 	}
 
 	/**
 	 * 指定ユーザーIDのユーザーを1件更新します。
 	 * @param model ユーザーモデル
 	 * @return 実行結果 1:成功、0:失敗、その他:エラーコード
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public int update(UserModel model) {
-		UserDAO dao = new UserDAO();
-		return dao.update(this.connection, model);
+	public int update(UserModel model) throws ClassNotFoundException, SQLException {
+		try (DBConnection db = new DBConnection()) {
+			Connection conn = db.getInstance();
+			UserDAO dao = new UserDAO();
+			return dao.update(conn, model);
+		}
 	}
 }

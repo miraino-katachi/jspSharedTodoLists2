@@ -7,43 +7,49 @@ import java.sql.SQLException;
 import com.katachi.miraino.database.DBConnection;
 
 import dao.TodoItemDAO;
+import dao.UserDAO;
 import model.TodoItemModel;
+import model.UserModel;
 
 public class TodoItemInsert {
 
 	/**
 	 * トランザクションのテスト
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		try {
-			TodoItemDAO dao = new TodoItemDAO();
+			TodoItemDAO itemDAO = new TodoItemDAO();
 			TodoItemModel item = new TodoItemModel();
-			Connection conn = DBConnection.getInstance();
+			UserDAO userDAO = new UserDAO();
+			UserModel user = new UserModel();
+			try (DBConnection db = new DBConnection()) {
+				Connection conn = db.getInstance();
 
-			// 自動的にコミットしないようにする。
-			conn.setAutoCommit(false);
-			Date date = new Date(0);
-			
-			// 1回目
-			item.setUserId(1);
-			item.setTodoItem("テストのアイテム1");
-			item.setExpirationDate(date);
-			item.setRegistrationDate(date);
-			System.out.println(dao.create(conn, item));
+				// 自動的にコミットしないようにする。
+				conn.setAutoCommit(false);
 
-			// 1回目
-			item.setUserId(1);
-			item.setTodoItem("テストのアイテム2");
-			item.setExpirationDate(date);
-			item.setRegistrationDate(date);
-			System.out.println(dao.create(conn, item));
+				// 1回目
+				item.setUserId(1);
+				item.setTodoItem("テストのアイテム1");
+				Date date = new Date(0);
+				item.setExpirationDate(date);
+				item.setRegistrationDate(date);
+				System.out.println(itemDAO.create(conn, item));
 
-			// ロールバックする
-			 conn.rollback();
+				// 2回目
+				user.setEmail("test@example.com");
+				user.setPassword("abcdefgh");
+				user.setName("test user");
+				System.out.println(userDAO.create(conn, user));
 
-			// コミットする
-//			conn.commit();
+				// ロールバックして、2回ともインサートされないことを確認する。
+//				conn.rollback();
+
+				// コミットして、2回ともコミットされていることを確認する。
+				conn.commit();
+			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}

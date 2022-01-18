@@ -8,43 +8,49 @@ import settings.DatabaseSettings;
 
 /**
  * データベース接続クラス
+ * AutoCloseableについては、APIのドキュメントの「インタフェースAutoCloseable」の項を参照。
+ * @see https://docs.oracle.com/javase/jp/8/docs/api/java/lang/AutoCloseable.html
  */
-public class DBConnection {
+public class DBConnection implements AutoCloseable {
 
-//	private Connection connection;
+	/** データベースコネクション **/
+	private Connection connection;
+
+	/**
+	 * コンストラクタ
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public DBConnection() throws ClassNotFoundException, SQLException {
+		// JDBCドライバを読み込み
+		Class.forName(DatabaseSettings.DRIVER_NAME);
+		// データベースコネクションを保存
+		this.connection = DriverManager.getConnection(DatabaseSettings.JDBC_URL, DatabaseSettings.DB_USER,
+				DatabaseSettings.DB_PASS);
+	}
 
 	/**
 	 * データベースコネクションのインタスンスを返却します。
+	 * 
 	 * @return データベースコネクションのインスタンス
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public static Connection getInstance() throws SQLException, ClassNotFoundException {
-		// JDBCドライバを読み込み
-		Class.forName(DatabaseSettings.DRIVER_NAME);
+	public Connection getInstance() throws SQLException, ClassNotFoundException {
 		// データベースコネクションを返却
-		return DriverManager.getConnection(DatabaseSettings.JDBC_URL, DatabaseSettings.DB_USER, DatabaseSettings.DB_PASS);
+		return this.connection;
 	}
-	
-	/**
-	 * データベース接続クラス
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-//	public  DBConnection() throws ClassNotFoundException, SQLException {
-//		// JDBCドライバを読み込み
-//		Class.forName(DatabaseSettings.DRIVER_NAME);
-//		// データベースへ接続
-//		this.connection= DriverManager.getConnection(DatabaseSettings.JDBC_URL, DatabaseSettings.DB_USER, DatabaseSettings.DB_PASS);
-//	}
 
 	/**
-	 * データベース接続（セッション）を取得します。
-	 * @return データベース接続（セッション）
-	 * @throws SQLException
+	 * データベースコネクションを閉じます。
+	 * @throws Exception
 	 */
-//	public Connection getConnection() throws SQLException {
-//		// データベースへ接続
-//		return this.connection;
-//	}
+	@Override
+	public void close() {
+		try {
+			this.connection.close();
+		} catch (Exception e) {
+			// 何もしない
+		}
+	}
 }
