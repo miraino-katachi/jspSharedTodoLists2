@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * ユーザーモデルクラス
  */
-public class UserModel {
+public class UserModel implements Serializable {
 
 	private int id;
 	private String email;
