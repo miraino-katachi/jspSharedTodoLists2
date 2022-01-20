@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
  * TODOアイテムモデルクラス
  */
-public class TodoItemModel {
+public class TodoItemModel implements Serializable {
 
 	private int id;
 	private int userId;
