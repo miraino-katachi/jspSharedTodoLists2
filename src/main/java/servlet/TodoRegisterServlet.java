@@ -33,7 +33,6 @@ public class TodoRegisterServlet extends HttpServlet {
 	 */
 	public TodoRegisterServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -96,8 +95,8 @@ public class TodoRegisterServlet extends HttpServlet {
 			// リクエストパラメータをTODOモデルに設定する。
 			TodoItemModel todoItem = new TodoItemModel();
 			todoItem.setUserId(user.getId());
-			todoItem.setRegistrationDate(java.sql.Date.valueOf(registrationDate));
-			todoItem.setExpirationDate(java.sql.Date.valueOf(expirationDate));
+			todoItem.setRegistrationDate(Date.valueOf(registrationDate));
+			todoItem.setExpirationDate(Date.valueOf(expirationDate));
 			if (finishedDate == null) {
 				todoItem.setFinishedDate(null);
 			} else {

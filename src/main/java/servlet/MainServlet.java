@@ -30,7 +30,6 @@ public class MainServlet extends HttpServlet {
 	 */
 	public MainServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

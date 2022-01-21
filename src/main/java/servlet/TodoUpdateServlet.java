@@ -35,7 +35,6 @@ public class TodoUpdateServlet extends HttpServlet {
 	 */
 	public TodoUpdateServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
