@@ -1,11 +1,9 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class TodoItemDAO {
 	/**
 	 * TODOアイテムを全件取得します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @return TODOアイテムモデルのArrayList
 	 */
 	public List<TodoItemModel> findAll(Connection connection) {
@@ -57,21 +55,21 @@ public class TodoItemDAO {
 						TodoItemModel model = new TodoItemModel();
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
-						model.setRegistrationDate(Date.valueOf(rs.getString("registration_date")));
-						model.setExpirationDate(Date.valueOf(rs.getString("expiration_date")));
-						model.setFinishedDate(Date.valueOf(rs.getString("finished_date")));
+						model.setRegistrationDate(rs.getDate("registration_date"));
+						model.setExpirationDate(rs.getDate("expiration_date"));
+						model.setFinishedDate(rs.getDate("finished_date"));
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
-						model.setCreatedAt(Timestamp.valueOf(rs.getString("created_at")));
-						model.setUpdatedAt(Timestamp.valueOf(rs.getString("updated_at")));
+						model.setCreatedAt(rs.getTimestamp("created_at"));
+						model.setUpdatedAt(rs.getTimestamp("updated_at"));
 
 						UserModel userModel = new UserModel();
 						userModel.setEmail(rs.getString("email"));
 						userModel.setPassword(rs.getString("password"));
 						userModel.setName(rs.getString("name"));
 						userModel.setIsDeleted(rs.getInt("user_is_deleted"));
-						userModel.setCreatedAt(Timestamp.valueOf(rs.getString("user_created_at")));
-						userModel.setUpdatedAt(Timestamp.valueOf(rs.getString("user_updated_at")));
+						userModel.setCreatedAt(rs.getTimestamp("user_created_at"));
+						userModel.setUpdatedAt(rs.getTimestamp("user_updated_at"));
 						model.setUserModel(userModel);
 
 						list.add(model);
@@ -88,7 +86,7 @@ public class TodoItemDAO {
 	/**
 	 * TODOアイテムを1件取得します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param id         TODOアイテムID
 	 * @param userId     ユーザーID
 	 * @return TODOアイテムモデル
@@ -97,9 +95,10 @@ public class TodoItemDAO {
 		TodoItemModel model = new TodoItemModel();
 		try {
 			// SQL文を設定する
-			String sql = BASE_SQL + "where t.is_deleted=0 " 
-					+ "and u.is_deleted=0 "
-					+ "and t.id=? "
+			String sql = BASE_SQL 
+					+ "where t.is_deleted=0 " 
+					+ "and u.is_deleted=0 " 
+					+ "and t.id=? " 
 					+ "and t.user_id=?";
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// パラメータを設定
@@ -111,25 +110,25 @@ public class TodoItemDAO {
 					if (rs.next()) {
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
-						model.setRegistrationDate(Date.valueOf(rs.getString("registration_date")));
-						model.setExpirationDate(Date.valueOf(rs.getString("expiration_date")));
+						model.setRegistrationDate(rs.getDate("registration_date"));
+						model.setExpirationDate(rs.getDate("expiration_date"));
 						if (rs.getString("finished_date") == null) {
 							model.setFinishedDate(null);
 						} else {
-							model.setFinishedDate(Date.valueOf(rs.getString("finished_date")));
+							model.setFinishedDate(rs.getDate("finished_date"));
 						}
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
-						model.setCreatedAt(Timestamp.valueOf(rs.getString("created_at")));
-						model.setUpdatedAt(Timestamp.valueOf(rs.getString("updated_at")));
+						model.setCreatedAt(rs.getTimestamp("created_at"));
+						model.setUpdatedAt(rs.getTimestamp("updated_at"));
 
 						UserModel userModel = new UserModel();
 						userModel.setEmail(rs.getString("email"));
 						userModel.setPassword(rs.getString("password"));
 						userModel.setName(rs.getString("name"));
 						userModel.setIsDeleted(rs.getInt("user_is_deleted"));
-						userModel.setCreatedAt(Timestamp.valueOf(rs.getString("user_created_at")));
-						userModel.setUpdatedAt(Timestamp.valueOf(rs.getString("user_updated_at")));
+						userModel.setCreatedAt(rs.getTimestamp("user_created_at"));
+						userModel.setUpdatedAt(rs.getTimestamp("user_updated_at"));
 						model.setUserModel(userModel);
 					} else {
 						model = null;
@@ -146,7 +145,7 @@ public class TodoItemDAO {
 	/**
 	 * 指定ユーザーIDのTODOアイテムを取得します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @param limit      取得するレコード数（リミット値）
 	 * @param offset     取得開始する行数（オフセット値）
@@ -173,17 +172,17 @@ public class TodoItemDAO {
 						TodoItemModel model = new TodoItemModel();
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
-						model.setRegistrationDate(Date.valueOf(rs.getString("registration_date")));
-						model.setExpirationDate(Date.valueOf(rs.getString("expiration_date")));
+						model.setRegistrationDate(rs.getDate("registration_date"));
+						model.setExpirationDate(rs.getDate("expiration_date"));
 						if (rs.getString("finished_date") == null) {
 							model.setFinishedDate(null);
 						} else {
-							model.setFinishedDate(Date.valueOf(rs.getString("finished_date")));
+							model.setFinishedDate(rs.getDate("finished_date"));
 						}
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
-						model.setCreatedAt(Timestamp.valueOf(rs.getString("created_at")));
-						model.setUpdatedAt(Timestamp.valueOf(rs.getString("updated_at")));
+						model.setCreatedAt(rs.getTimestamp("created_at"));
+						model.setUpdatedAt(rs.getTimestamp("updated_at"));
 						list.add(model);
 					}
 				}
@@ -198,7 +197,7 @@ public class TodoItemDAO {
 	/**
 	 * 指定ユーザーIDのTODOアイテムを全件取得します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @return TodoItemModelのArrayList
 	 */
@@ -209,7 +208,7 @@ public class TodoItemDAO {
 	/**
 	 * 指定ユーザーIDのTODOアイテムのレコードの件数を取得します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @return レコード数
 	 */
@@ -243,7 +242,7 @@ public class TodoItemDAO {
 	/**
 	 * 指定ユーザーIDのTODOアイテムをキーワードで検索します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @return TODOアイテムモデルのArrayList
 	 */
 	public List<TodoItemModel> findByKeyWord(Connection connection, int userId, String keyWord) {
@@ -266,17 +265,17 @@ public class TodoItemDAO {
 						TodoItemModel model = new TodoItemModel();
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
-						model.setRegistrationDate(Date.valueOf(rs.getString("registration_date")));
-						model.setExpirationDate(Date.valueOf(rs.getString("expiration_date")));
+						model.setRegistrationDate(rs.getDate("registration_date"));
+						model.setExpirationDate(rs.getDate("expiration_date"));
 						if (rs.getString("finished_date") == null) {
 							model.setFinishedDate(null);
 						} else {
-							model.setFinishedDate(Date.valueOf(rs.getString("finished_date")));
+							model.setFinishedDate(rs.getDate("finished_date"));
 						}
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
-						model.setCreatedAt(Timestamp.valueOf(rs.getString("created_at")));
-						model.setUpdatedAt(Timestamp.valueOf(rs.getString("updated_at")));
+						model.setCreatedAt(rs.getTimestamp("created_at"));
+						model.setUpdatedAt(rs.getTimestamp("updated_at"));
 						list.add(model);
 					}
 				}
@@ -291,7 +290,7 @@ public class TodoItemDAO {
 	/**
 	 * TODOアイテムを1件追加します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param model      TodoItemModel
 	 * @return 結果（true:成功、false:失敗）
 	 */
@@ -316,12 +315,12 @@ public class TodoItemDAO {
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// パラメータを設定する
 				stmt.setInt(1, model.getUserId());
-				stmt.setString(2, model.getRegistrationDate().toString());
-				stmt.setString(3, model.getExpirationDate().toString());
+				stmt.setDate(2, model.getRegistrationDate());
+				stmt.setDate(3, model.getExpirationDate());
 				if (model.getFinishedDate() == null) {
 					stmt.setString(4, null);
 				} else {
-					stmt.setString(4, model.getFinishedDate().toString());
+					stmt.setDate(4, model.getFinishedDate());
 				}
 				stmt.setString(5, model.getTodoItem());
 				stmt.setInt(6, model.getIsDeleted());
@@ -339,7 +338,7 @@ public class TodoItemDAO {
 	/**
 	 * TODOアイテムを1件更新します。
 	 * 
-	 * @param Connection connection データベース接続のインスタンス
+	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param model      TodoItemModel
 	 * @return 結果（true:成功、false:失敗）
 	 */
@@ -357,12 +356,12 @@ public class TodoItemDAO {
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// パラメータを設定する
 				stmt.setInt(1, model.getUserId());
-				stmt.setString(2, model.getRegistrationDate().toString());
-				stmt.setString(3, model.getExpirationDate().toString());
+				stmt.setDate(2, model.getRegistrationDate());
+				stmt.setDate(3, model.getExpirationDate());
 				if (model.getFinishedDate() == null) {
-					stmt.setString(4, null);
+					stmt.setDate(4, null);
 				} else {
-					stmt.setString(4, model.getFinishedDate().toString());
+					stmt.setDate(4, model.getFinishedDate());
 				}
 				stmt.setString(5, model.getTodoItem());
 				stmt.setInt(6, model.getIsDeleted());
