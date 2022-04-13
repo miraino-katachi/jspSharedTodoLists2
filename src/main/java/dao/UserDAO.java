@@ -87,8 +87,9 @@ public class UserDAO {
 	/**
 	 * 指定ユーザーIDのユーザーを1件検索します
 	 * 
-	 * @param Connection connection データベースコネクションのインスタンス
-	 * @param id         ユーザーID
+	 * @param connection データベースコネクションのインスタンス
+	 * @param email emailアドレス
+	 * @param password パスワード
 	 * @return 検索結果（ユーザーモデル）
 	 */
 	public UserModel findOne(Connection connection, String email, String password) {
