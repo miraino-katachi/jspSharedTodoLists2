@@ -5,7 +5,7 @@ JSP/Servletで「共有TODOリスト」を作ってみました。
 書籍に載っていないところは、ネットで調べて実装しています。
 仕様に関しては、ほぼ、PHPの共有TODOリストに準拠しています（一部異なるところがあります）。
 
-https://github.com/miraino-katachi/shared_todo_lists
+<a href="https://github.com/miraino-katachi/shared_todo_lists" target="_blank">https://github.com/miraino-katachi/shared_todo_lists</a>
 
 実際にソースコードをダウンロードして実行してみてください。
 
