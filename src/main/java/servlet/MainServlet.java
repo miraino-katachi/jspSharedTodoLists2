@@ -42,20 +42,26 @@ public class MainServlet extends HttpServlet {
 			// TODOリストを取得する。
 			TodoItemLogic logic;
 			logic = new TodoItemLogic();
+
+			// セッションスコープに保存されたユーザー情報を取得する。
 			HttpSession session = request.getSession();
 			UserModel user = (UserModel) session.getAttribute("user");
+
 			List<TodoItemModel> items = null;
+
 			if (request.getParameter("key") != null) {
-				// 検索キーワードがある場合
+				// 検索キーワードがある場合。
 				// GETパラメータで日本語を受け取ると文字化けするので、server.xmlに下記を追記する。
 				// useBodyEncodingForURI="true"
 				items = logic.find(user.getId(), request.getParameter("key"));
-				// 検索窓表示用
+
+				// 検索テキストボックス表示用
 				request.setAttribute("key", request.getParameter("key"));
 			} else {
-				// 検索キーワードがない場合
+				// 検索キーワードがない場合。
 				items = logic.find(user.getId());
 			}
+
 			request.setAttribute("items", items);
 
 			// 今日の日付を取得する（期限日が今日を過ぎているかどうかの判断に使う）。
@@ -65,12 +71,15 @@ public class MainServlet extends HttpServlet {
 			// メインページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
 			dispatcher.forward(request, response);
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}

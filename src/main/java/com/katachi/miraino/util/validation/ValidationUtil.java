@@ -10,6 +10,7 @@ import settings.SecuritySettings;
 
 /**
  * バリデーションユーティリティクラス
+ * 各入力フォームのバリデーションクラスで呼び出します。
  */
 public class ValidationUtil {
 
@@ -72,7 +73,7 @@ public class ValidationUtil {
 	 * @param value 文字列
 	 * @return true:正しい、false:正しくない
 	 */
-	public static final boolean isInteger(String value ) {
+	public static final boolean isInteger(String value) {
 		IntegerValidator integer = IntegerValidator.getInstance();
 		return integer.isValid(value);
 	}

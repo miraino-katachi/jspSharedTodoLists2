@@ -59,10 +59,12 @@ public class UserRegisterServlet extends HttpServlet {
 		try {
 			// バリデーションチェックを行う。
 			UserValidation validate = new UserValidation(request);
-			Map<String, String> error = validate.validate();
+			Map<String, String> errors = validate.validate();
+
 			// バリデーションエラーがあった時
 			if (validate.hasErrors()) {
-				request.setAttribute("error", error);
+				request.setAttribute("errors", errors);
+
 				// JSPのinputタグのvalue値の表示に使うためにリクエストパラメータをMapに保存する。
 				Map<String, String> user = new HashMap<String, String>();
 				user.put("email", email);
@@ -73,21 +75,22 @@ public class UserRegisterServlet extends HttpServlet {
 				// ユーザー登録ページへフォワードして終了する。
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userRegister.jsp");
 				dispatcher.forward(request, response);
+
 				return;
 			}
 
-			// リクエストパラメータをユーザーモデルに設定する
+			// リクエストパラメータをユーザーモデルに設定する。
 			UserModel user = new UserModel();
 			user.setEmail(email);
 			user.setPassword(password);
 			user.setName(name);
 
-			// ユーザーを登録する
+			// ユーザーを登録する。
 			UserLogic logic;
 			logic = new UserLogic();
 			int ret = logic.create(user);
 
-			// 実行結果により処理を切り替える
+			// 実行結果により処理を切り替える。
 			switch (ret) {
 			case DatabaseSettings.DB_EXECUTION_SUCCESS:
 				// データベース操作成功のとき、ログインページへリダイレクトして終了する。
@@ -103,18 +106,21 @@ public class UserRegisterServlet extends HttpServlet {
 				break;
 			}
 
-			// リクエストスコープにMapに保存したリクエストパラメータを保存する
+			// リクエストスコープにMapに保存したリクエストパラメータを保存する。
 			request.setAttribute("user", user);
 
 			// ユーザー登録ページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userRegister.jsp");
 			dispatcher.forward(request, response);
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}

@@ -17,20 +17,31 @@ import settings.PageSettings;
 /**
  * ログインチェックを行うフィルタ。
  */
-@WebFilter(filterName = "LoginCheckFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する
+@WebFilter(filterName = "LoginCheckFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する。
 public class LoginCheckFilter implements Filter {
 
 	/**
 	 * ログインチェックを行う。
+	 * セッションにユーザー情報が登録されているかを確認して、登録されていなければログイン画面にリダイレクトする。
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// セッションにユーザー情報が登録されているかを確認して、登録されていなければログイン画面にリダイレクトする。
+		// ServletRequestクラスオブジェクトではgetSession()メソッド、getContextPath()メソッドが使えないので、
+		// HttpServletRequestクラスオブジェクトにキャストする。
 		HttpServletRequest req = (HttpServletRequest) request;
+
+		// ServletResponseクラスオブジェクトではsendRedirect()メソッドが使えないので、
+		// HttpServletResponseクラスオブジェクトにキャストする。
 		HttpServletResponse res = (HttpServletResponse) response;
+
+		// セッションスコープを取得する。なければ作成する。
 		HttpSession session = req.getSession(true);
+
+		// セッションスコープに保存されているユーザー情報がないとき
 		if (session.getAttribute("user") == null) {
+			// ログインページにリダイレクトする。
 			res.sendRedirect(req.getContextPath() + PageSettings.LOGIN_SERVLET);
+
 			// ここでreturnしないと「レスポンスをコミットした後でフォワードできません」と例外が発生する。
 			return;
 		}

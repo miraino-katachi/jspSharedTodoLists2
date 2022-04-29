@@ -35,10 +35,14 @@ public class LogoutServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.removeAttribute("user");
 
+		// 成功メッセージをリクエストスコープに保存する。
 		request.setAttribute("success", "ログアウトしました");
 
+		// ログインページへフォワードする。
 		RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.LOGIN_JSP);
 		dispatcher.forward(request, response);
+
+		return;
 	}
 
 	/**

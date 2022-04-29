@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import settings.DatabaseSettings;
 
 /**
- * データベース接続クラス
+ * データベースコネクション（接続）クラス
  * AutoCloseableについては、APIのドキュメントの「インタフェースAutoCloseable」の項を参照。
  * @see https://docs.oracle.com/javase/jp/8/docs/api/java/lang/AutoCloseable.html
  */
@@ -24,17 +24,18 @@ public class DBConnection implements AutoCloseable {
 	public DBConnection() throws ClassNotFoundException, SQLException {
 		// JDBCドライバを読み込み
 		Class.forName(DatabaseSettings.DRIVER_NAME);
-		// データベースコネクションを保存
+
+		// データベースコネクションをプロパティに保存
 		this.connection = DriverManager.getConnection(DatabaseSettings.JDBC_URL, DatabaseSettings.DB_USER,
 				DatabaseSettings.DB_PASS);
 	}
 
 	/**
 	 * データベースコネクションのインタスンスを返却します。
-	 * 
+	 *
 	 * @return データベースコネクションのインスタンス
-	 * @throws SQLException
 	 * @throws ClassNotFoundException
+	 * @throws SQLException
 	 */
 	public Connection getInstance() throws SQLException, ClassNotFoundException {
 		// データベースコネクションを返却

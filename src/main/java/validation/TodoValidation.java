@@ -33,20 +33,25 @@ public class TodoValidation extends Validation {
 		if (!ValidationUtil.isMaxLength(this.request.getParameter("todoItem"), 50)) {
 			this.errors.put("todoItem", String.format(MessageSettings.MSG_LENGTH_LONG, "TODO項目", 50));
 		}
+		
 		if (!ValidationUtil.isMinLength(this.request.getParameter("todoItem"), 1)) {
 			this.errors.put("todoItem", String.format(MessageSettings.MSG_REQUIRED, "TODO項目"));
 		}
+		
 		// 登録日のバリデーション
 		if (!ValidationUtil.isDate(this.request.getParameter("registrationDate"))) {
 			this.errors.put("registrationDate", String.format(MessageSettings.MSG_INVALID_VALUE, "登録日"));
 		}
+		
 		if (!ValidationUtil.isMinLength(this.request.getParameter("registrationDate"), 1)) {
 			this.errors.put("registrationDate", String.format(MessageSettings.MSG_REQUIRED, "登録日"));
 		}
+		
 		// 期限日のバリデーション
 		if (!ValidationUtil.isDate(this.request.getParameter("expirationDate"))) {
 			this.errors.put("expirationDate", String.format(MessageSettings.MSG_INVALID_VALUE, "期限日"));
 		}
+		
 		if (!ValidationUtil.isMinLength(this.request.getParameter("expirationDate"), 1)) {
 			this.errors.put("expirationDate", String.format(MessageSettings.MSG_REQUIRED, "期限日"));
 		}

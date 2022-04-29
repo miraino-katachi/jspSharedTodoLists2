@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * コンテキストのパスを取得するためのフィルタ。
  */
-@WebFilter(filterName = "GetContextPathFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する
+@WebFilter(filterName = "GetContextPathFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する。
 public class GetContextPathFilter implements Filter {
 
 	/**

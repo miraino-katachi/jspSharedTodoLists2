@@ -26,25 +26,25 @@
 						<label for="registrationDate">登録日</label>
 						<input type="date"
 							name="registrationDate" id="registrationDate"
-							class="form-control<c:if test="${error.registrationDate!=null}"> is-invalid</c:if>"
+							class="form-control<c:if test="${errors.registrationDate!=null}"> is-invalid</c:if>"
 							value="<c:out value="${todoItem.registrationDate}"/>">
-						<span class="text-danger">${error.registrationDate}</span>
+						<span class="text-danger">${errors.registrationDate}</span>
 					</div>
 					<div class="form-group">
 						<label for="todoItem">TODO項目</label>
 						<input type="text"
 							name="todoItem" id="todoItem"
-							class="form-control<c:if test="${error.todoItem!=null}"> is-invalid</c:if>"
+							class="form-control<c:if test="${errors.todoItem!=null}"> is-invalid</c:if>"
 							value="<c:out value="${todoItem.todoItem}"/>">
-						<span class="text-danger">${error.todoItem}</span>
+						<span class="text-danger">${errors.todoItem}</span>
 					</div>
 					<div class="form-group">
 						<label for="expirationDate">期限日</label>
 						<input type="date"
 							name="expirationDate" id="expirationDate"
-							class="form-control<c:if test="${error.expirationDate!=null}"> is-invalid</c:if>"
+							class="form-control<c:if test="${errors.expirationDate!=null}"> is-invalid</c:if>"
 							value="<c:out value="${todoItem.expirationDate}"/>">
-						<span class="text-danger">${error.expirationDate}</span>
+						<span class="text-danger">${errors.expirationDate}</span>
 					</div>
 					<div class="custom-control custom-checkbox mb-3">
 						<input type="checkbox" class="custom-control-input"

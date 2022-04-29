@@ -44,7 +44,6 @@ public class UserUpdateServlet extends HttpServlet {
 		// ユーザー更新ページへフォワードする。
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userUpdate.jsp");
 		dispatcher.forward(request, response);
-		return;
 	}
 
 	/**
@@ -62,10 +61,11 @@ public class UserUpdateServlet extends HttpServlet {
 		try {
 			// バリデーションチェックを行う。
 			UserValidation validate = new UserValidation(request);
-			Map<String, String> error = validate.validate();
-			// バリデーションエラーがあった時
+			Map<String, String> errors = validate.validate();
+
+			// バリデーションエラーがあった時。
 			if (validate.hasErrors()) {
-				request.setAttribute("error", error);
+				request.setAttribute("errors", errors);
 				// JSPのinputタグのvalue値の表示に使うためにリクエストパラメータをMapに保存する。
 				Map<String, String> user = new HashMap<String, String>();
 				user.put("email", email);
@@ -84,19 +84,19 @@ public class UserUpdateServlet extends HttpServlet {
 			UserModel userModel = (UserModel) session.getAttribute("user");
 			int id = userModel.getId();
 
-			// リクエストパラメータをユーザーモデルに設定する
+			// リクエストパラメータをユーザーモデルに設定する。
 			UserModel user = new UserModel();
 			user.setId(id);
 			user.setEmail(email);
 			user.setPassword(password);
 			user.setName(name);
 
-			// ユーザーを登録する
+			// ユーザーを登録する。
 			UserLogic logic;
 			logic = new UserLogic();
 			int ret = logic.update(user);
 
-			// 実行結果により処理を切り替える
+			// 実行結果により処理を切り替える。
 			switch (ret) {
 			case DatabaseSettings.DB_EXECUTION_SUCCESS:
 				// データベース操作成功のとき、ログアウトさせ、ログインページへリダイレクトして終了する。
@@ -113,18 +113,21 @@ public class UserUpdateServlet extends HttpServlet {
 				break;
 			}
 
-			// リクエストスコープにMapに保存したリクエストパラメータを保存する
+			// リクエストスコープにMapに保存したリクエストパラメータを保存する。
 			request.setAttribute("user", user);
 
 			// ユーザー登録ページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userUpdate.jsp");
 			dispatcher.forward(request, response);
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}

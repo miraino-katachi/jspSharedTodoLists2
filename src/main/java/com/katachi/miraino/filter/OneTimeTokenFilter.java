@@ -16,7 +16,7 @@ import com.katachi.miraino.util.security.SecurityUtil;
 /**
  * ワンタイムトークンを生成して、セッションに保存するフィルタ
  */
-@WebFilter(filterName = "OneTimeTokenFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する
+@WebFilter(filterName = "OneTimeTokenFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する。
 public class OneTimeTokenFilter implements Filter {
 
 	/**
@@ -24,12 +24,21 @@ public class OneTimeTokenFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// ワンタイムトークンを生成してセッションに保存する。
+		// getMethod()メソッド、getSession()メソッドが使えるように、
+		// ServletResponseクラスオブジェクトをHttpServletRequestクラスオブジェクトにキャストする。
 		HttpServletRequest req = (HttpServletRequest) request;
+
+		// ワンタイムトークンを生成してセッションに保存する。
+		// メソッドがGETのときのみ処理を行う。
 		if (req.getMethod().equals("GET")) {
+			// トークンを生成する。
 			String token = SecurityUtil.generateToken();
+
+			// HttpSessionインスタンスを取得する。
+			// セッションが開始されていない場合は、新しいインスタンスを取得する。
 			HttpSession session = req.getSession(true);
-			// JSPでも${token}で取得できる
+
+			// トークンをセッションスコープに保存する。
 			session.setAttribute("token", token);
 		}
 

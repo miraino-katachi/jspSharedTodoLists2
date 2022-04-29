@@ -16,41 +16,45 @@ import model.UserModel;
 public class TodoItemDAO {
 	/** 基本となるSELECT文 */
 	private final String BASE_SQL = "select "
-			+ "t.id," 
-			+ "t.user_id," 
-			+ "t.registration_date," 
+			+ "t.id,"
+			+ "t.user_id,"
+			+ "t.registration_date,"
 			+ "t.expiration_date,"
-			+ "t.finished_date," 
-			+ "t.todo_item," 
-			+ "t.is_deleted," 
-			+ "t.created_at," 
-			+ "t.updated_at," 
+			+ "t.finished_date,"
+			+ "t.todo_item,"
+			+ "t.is_deleted,"
+			+ "t.created_at,"
+			+ "t.updated_at,"
 			+ "u.email,"
-			+ "u.password," 
-			+ "u.name," 
-			+ "u.is_deleted as user_is_deleted," 
+			+ "u.password,"
+			+ "u.name,"
+			+ "u.is_deleted as user_is_deleted,"
 			+ "u.created_at as user_created_at,"
-			+ "u.updated_at as user_updated_at " 
-			+ "from todo_items t " 
+			+ "u.updated_at as user_updated_at "
+			+ "from todo_items t "
 			+ "inner join users u on t.user_id=u.id ";
 
 	/**
 	 * TODOアイテムを全件取得します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @return TODOアイテムモデルのArrayList
 	 */
 	public List<TodoItemModel> findAll(Connection connection) {
+		// レコードを格納するArrayListを生成する。
 		List<TodoItemModel> list = new ArrayList<TodoItemModel>();
+
 		try {
-			// SQLを実行する準備をする
-			String sql = BASE_SQL 
+			// SQL文を設定する。
+			String sql = BASE_SQL
 					+ "where t.is_deleted=0 and u.is_deleted=0 "
 					+ "order by t.expiration_date asc, t.id desc";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// SQLを実行する
 				try (ResultSet rs = stmt.executeQuery()) {
-					// SQLの実行結果をArrayListに格納する
+					// SQLの実行結果をArrayListに格納する。
 					while (rs.next()) {
 						TodoItemModel model = new TodoItemModel();
 						model.setId(rs.getInt("id"));
@@ -70,53 +74,59 @@ public class TodoItemDAO {
 						userModel.setIsDeleted(rs.getInt("user_is_deleted"));
 						userModel.setCreatedAt(rs.getTimestamp("user_created_at"));
 						userModel.setUpdatedAt(rs.getTimestamp("user_updated_at"));
+
 						model.setUserModel(userModel);
 
+						// ArrayListにレコードを追加する。
 						list.add(model);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return null;
 		}
+
 		return list;
 	}
 
 	/**
 	 * TODOアイテムを1件取得します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param id         TODOアイテムID
 	 * @param userId     ユーザーID
 	 * @return TODOアイテムモデル
 	 */
 	public TodoItemModel findOne(Connection connection, int id, int userId) {
+		// TodoItemModelクラスのインスタンスを生成する。
 		TodoItemModel model = new TodoItemModel();
+
 		try {
-			// SQL文を設定する
-			String sql = BASE_SQL 
-					+ "where t.is_deleted=0 " 
-					+ "and u.is_deleted=0 " 
-					+ "and t.id=? " 
+			// SQL文を設定する。
+			String sql = BASE_SQL
+					+ "where t.is_deleted=0 "
+					+ "and u.is_deleted=0 "
+					+ "and t.id=? "
 					+ "and t.user_id=?";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// パラメータを設定
 				stmt.setInt(1, id);
 				stmt.setInt(2, userId);
-				// SQLを実行する
+
+				// SQLを実行する。
 				try (ResultSet rs = stmt.executeQuery()) {
-					// SQLの実行結果を取得する
+					// SQLの実行結果を取得する。
 					if (rs.next()) {
+						// 実行結果があるとき、モデルに値を設定する。
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
 						model.setRegistrationDate(rs.getDate("registration_date"));
 						model.setExpirationDate(rs.getDate("expiration_date"));
-						if (rs.getString("finished_date") == null) {
-							model.setFinishedDate(null);
-						} else {
-							model.setFinishedDate(rs.getDate("finished_date"));
-						}
+						model.setFinishedDate(rs.getDate("finished_date"));
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
 						model.setCreatedAt(rs.getTimestamp("created_at"));
@@ -129,22 +139,26 @@ public class TodoItemDAO {
 						userModel.setIsDeleted(rs.getInt("user_is_deleted"));
 						userModel.setCreatedAt(rs.getTimestamp("user_created_at"));
 						userModel.setUpdatedAt(rs.getTimestamp("user_updated_at"));
+
 						model.setUserModel(userModel);
 					} else {
+						// 実行結果がないときは、nullを代入する。
 						model = null;
 					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return null;
 		}
+
 		return model;
 	}
 
 	/**
 	 * 指定ユーザーIDのTODOアイテムを取得します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @param limit      取得するレコード数（リミット値）
@@ -152,51 +166,58 @@ public class TodoItemDAO {
 	 * @return TodoItemModelのArrayList
 	 */
 	public List<TodoItemModel> findByUserId(Connection connection, int userId, int limit, int offset) {
+		// レコードを格納するArrayListを生成する。
 		List<TodoItemModel> list = new ArrayList<TodoItemModel>();
 		try {
-			// SQLを実行する準備をする
-			String sql = BASE_SQL 
-					+ "where t.is_deleted=0 " 
+			// SQL文を設定する。
+			String sql = BASE_SQL
+					+ "where t.is_deleted=0 "
 					+ "and t.user_id=? "
-					+ "order by t.expiration_date asc, t.id desc " 
+					+ "order by t.expiration_date asc, t.id desc "
 					+ "limit ? offset ?";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-				// パラメータを設定する
+				// パラメータを設定する。
 				stmt.setInt(1, userId);
 				stmt.setInt(2, limit);
 				stmt.setInt(3, offset);
+
 				// SQLを実行する
 				try (ResultSet rs = stmt.executeQuery()) {
-					// SQLの実行結果をArrayListに格納する
+					// レコードが存在する間、処理を行う。
 					while (rs.next()) {
+						// TodoItemModelのインスタンスを生成する。
 						TodoItemModel model = new TodoItemModel();
+
+						// プロパティに値を設定する。
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
 						model.setRegistrationDate(rs.getDate("registration_date"));
 						model.setExpirationDate(rs.getDate("expiration_date"));
-						if (rs.getString("finished_date") == null) {
-							model.setFinishedDate(null);
-						} else {
-							model.setFinishedDate(rs.getDate("finished_date"));
-						}
+						model.setFinishedDate(rs.getDate("finished_date"));
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
 						model.setCreatedAt(rs.getTimestamp("created_at"));
 						model.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+						// レコードをArrayListに追加する。
 						list.add(model);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return null;
 		}
+
 		return list;
 	}
 
 	/**
 	 * 指定ユーザーIDのTODOアイテムを全件取得します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @return TodoItemModelのArrayList
@@ -207,24 +228,27 @@ public class TodoItemDAO {
 
 	/**
 	 * 指定ユーザーIDのTODOアイテムのレコードの件数を取得します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param userId     ユーザーID
 	 * @return レコード数
 	 */
 	public int countByUserId(Connection connection, int userId) {
 		try {
-			// SQLを実行する準備をする
-			String sql = "select count(t.id) as cnt " 
-					+ "from todo_items t " 
+			// SQL文を設定する。
+			String sql = "select count(t.id) as cnt "
+					+ "from todo_items t "
 					+ "inner join users u on t.user_id=u.id "
-					+ "where t.is_deleted=0 " 
-					+ "and t.user_id=? " 
+					+ "where t.is_deleted=0 "
+					+ "and t.user_id=? "
 					+ "order by t.expiration_date asc, t.id desc";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				// パラメータを設定する
 				stmt.setInt(1, userId);
-				// SQLを実行する
+
+				// SQLを実行する。
 				try (ResultSet rs = stmt.executeQuery()) {
 					if (rs.next()) {
 						return rs.getInt("cnt");
@@ -235,30 +259,36 @@ public class TodoItemDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return 0;
 		}
 	}
 
 	/**
 	 * 指定ユーザーIDのTODOアイテムをキーワードで検索します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @return TODOアイテムモデルのArrayList
 	 */
 	public List<TodoItemModel> findByKeyWord(Connection connection, int userId, String keyWord) {
+		// レコードを格納するArrayListを生成する。
 		List<TodoItemModel> list = new ArrayList<TodoItemModel>();
+
 		try {
-			// SQLを実行する準備をする
-			String sql = BASE_SQL 
-					+ "where t.is_deleted=0 " 
-					+ "and t.user_id=? " 
+			// SQL文を設定する。
+			String sql = BASE_SQL
+					+ "where t.is_deleted=0 "
+					+ "and t.user_id=? "
 					+ "and t.todo_item like ? "
 					+ "order by t.expiration_date asc, t.id desc";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-				// パラメータを設定する
+				// パラメータを設定する。
 				stmt.setInt(1, userId);
 				stmt.setString(2, "%" + keyWord + "%");
-				// SQLを実行する
+
+				// SQLを実行する。
 				try (ResultSet rs = stmt.executeQuery()) {
 					// SQLの実行結果をArrayListに格納する
 					while (rs.next()) {
@@ -267,44 +297,44 @@ public class TodoItemDAO {
 						model.setUserId(rs.getInt("user_id"));
 						model.setRegistrationDate(rs.getDate("registration_date"));
 						model.setExpirationDate(rs.getDate("expiration_date"));
-						if (rs.getString("finished_date") == null) {
-							model.setFinishedDate(null);
-						} else {
-							model.setFinishedDate(rs.getDate("finished_date"));
-						}
+						model.setFinishedDate(rs.getDate("finished_date"));
 						model.setTodoItem(rs.getString("todo_item"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
 						model.setCreatedAt(rs.getTimestamp("created_at"));
 						model.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+						// レコードをArrayListに追加する。
 						list.add(model);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return null;
 		}
+
 		return list;
 	}
 
 	/**
 	 * TODOアイテムを1件追加します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param model      TodoItemModel
 	 * @return 結果（true:成功、false:失敗）
 	 */
 	public boolean create(Connection connection, TodoItemModel model) {
 		try {
-			// SQLを実行する準備をする
-			String sql = "insert into todo_items (" 
-					+ "user_id ," 
-					+ "registration_date," 
+			// SQL文を設定する。
+			String sql = "insert into todo_items ("
+					+ "user_id ,"
+					+ "registration_date,"
 					+ "expiration_date,"
-					+ "finished_date," 
-					+ "todo_item," 
-					+ "is_deleted" 
-					+ ") values (" 
+					+ "finished_date,"
+					+ "todo_item,"
+					+ "is_deleted"
+					+ ") values ("
 					+ "?," // user_id
 					+ "?," // registration_date
 					+ "?," // expiration_date
@@ -312,16 +342,14 @@ public class TodoItemDAO {
 					+ "?," // todo_item
 					+ "?" // is_deleted
 					+ ")";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-				// パラメータを設定する
+				// パラメータを設定する。
 				stmt.setInt(1, model.getUserId());
 				stmt.setDate(2, model.getRegistrationDate());
 				stmt.setDate(3, model.getExpirationDate());
-				if (model.getFinishedDate() == null) {
-					stmt.setString(4, null);
-				} else {
-					stmt.setDate(4, model.getFinishedDate());
-				}
+				stmt.setDate(4, model.getFinishedDate());
 				stmt.setString(5, model.getTodoItem());
 				stmt.setInt(6, model.getIsDeleted());
 
@@ -330,50 +358,52 @@ public class TodoItemDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return false;
 		}
+
 		return true;
 	}
 
 	/**
 	 * TODOアイテムを1件更新します。
-	 * 
+	 *
 	 * @param Connection connection データベースコネクションのインスタンス
 	 * @param model      TodoItemModel
 	 * @return 結果（true:成功、false:失敗）
 	 */
 	public boolean update(Connection connection, TodoItemModel model) {
 		try {
-			// SQLを実行する準備をする
-			String sql = "update todo_items set " 
-					+ "user_id=?," 
-					+ "registration_date=?," 
+			// SQL文を設定する。
+			String sql = "update todo_items set "
+					+ "user_id=?,"
+					+ "registration_date=?,"
 					+ "expiration_date=?,"
-					+ "finished_date=?," 
-					+ "todo_item=?," 
-					+ "is_deleted=? " 
+					+ "finished_date=?,"
+					+ "todo_item=?,"
+					+ "is_deleted=? "
 					+ "where id=?";
+
+			// SQLを実行する準備をする。
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-				// パラメータを設定する
+				// パラメータを設定する。
 				stmt.setInt(1, model.getUserId());
 				stmt.setDate(2, model.getRegistrationDate());
 				stmt.setDate(3, model.getExpirationDate());
-				if (model.getFinishedDate() == null) {
-					stmt.setDate(4, null);
-				} else {
-					stmt.setDate(4, model.getFinishedDate());
-				}
+				stmt.setDate(4, model.getFinishedDate());
 				stmt.setString(5, model.getTodoItem());
 				stmt.setInt(6, model.getIsDeleted());
 				stmt.setInt(7, model.getId());
 
-				// SQLを実行する
+				// SQLを実行する。
 				stmt.executeUpdate();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return false;
 		}
+
 		return true;
 	}
 }

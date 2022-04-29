@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 追加のヘッダ情報設定するフィルタ。
  */
-@WebFilter(filterName = "AddHeaderFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する
+@WebFilter(filterName = "AddHeaderFilter") // フィルタを実行するURLは/WEB-INF/web.xmlで指定する。
 public class AddHeaderFilter implements Filter {
 
 	/**
@@ -26,10 +26,12 @@ public class AddHeaderFilter implements Filter {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 
+		// ServletResponseクラスではsetHeaderメソッドが未定義のため、HttpServletResponseクラスオブジェクトににキャストする。
 		HttpServletResponse res = (HttpServletResponse) response;
+
 		// キャッシュされないようにヘッダに情報を埋め込む。
 		res.setHeader("Cache-Control", "no-cache, private");
-//		res.setHeader("progma", "no-cache");	// こちらは不要なようだ。
+
 		// キャッシュの有効期限に過去の日時を設定する。
 		res.setHeader("Expires", "Thu, 20 Jan 2022 00:00:00 GMT");
 

@@ -45,6 +45,7 @@ public class TodoRegisterServlet extends HttpServlet {
 		// フォワードする。
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todoRegister.jsp");
 		dispatcher.forward(request, response);
+
 		return;
 	}
 
@@ -63,6 +64,8 @@ public class TodoRegisterServlet extends HttpServlet {
 
 		try {
 			if (request.getParameter("finishedDate") != null) {
+				// 完了日がnullでなかったら、「今日」を完了日にする。
+				// チェックボックスにチェックを入れた場合は「On」という文字列がPOSTされてきます。
 				java.util.Date date = new java.util.Date();
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				finishedDate = format.format(date);
@@ -70,10 +73,12 @@ public class TodoRegisterServlet extends HttpServlet {
 
 			// バリデーションチェックを行う。
 			TodoValidation validate = new TodoValidation(request);
-			Map<String, String> error = validate.validate();
-			// バリデーションエラーがあった時
+			Map<String, String> errors = validate.validate();
+
+			// バリデーションエラーがあった時。
 			if (validate.hasErrors()) {
-				request.setAttribute("error", error);
+				request.setAttribute("errors", errors);
+
 				// JSPのinputタグのvalue値の表示に使うためにリクエストパラメータをMapに保存する。
 				Map<String, String> todoItem = new HashMap<String, String>();
 				todoItem.put("todoItem", item);
@@ -85,6 +90,7 @@ public class TodoRegisterServlet extends HttpServlet {
 				// 登録ページへフォワードして終了する。
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todoRegister.jsp");
 				dispatcher.forward(request, response);
+
 				return;
 			}
 
@@ -97,34 +103,40 @@ public class TodoRegisterServlet extends HttpServlet {
 			todoItem.setUserId(user.getId());
 			todoItem.setRegistrationDate(Date.valueOf(registrationDate));
 			todoItem.setExpirationDate(Date.valueOf(expirationDate));
+
 			if (finishedDate == null) {
 				todoItem.setFinishedDate(null);
 			} else {
 				todoItem.setFinishedDate(Date.valueOf(finishedDate));
 			}
+
 			todoItem.setTodoItem(item);
 			todoItem.setIsDeleted(0);
 
-			// TODOを登録する
+			// TODOを登録する。
 			TodoItemLogic logic;
 			logic = new TodoItemLogic();
 
 			if (!logic.crate(todoItem)) {
-				// エラーがあったときは、Mainへフォワードする
+				// エラーがあったときは、Mainへフォワードする。
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
 				request.setAttribute("todoItem", todoItem);
 				dispatcher.forward(request, response);
+
 				return;
 			}
 
-			// Mainへリダイレクト
+			// Mainへリダイレクトする。
 			response.sendRedirect(request.getContextPath() + "/Main");
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}

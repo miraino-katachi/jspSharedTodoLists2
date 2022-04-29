@@ -39,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 		// ログインページへフォワードする。
 		RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.LOGIN_JSP);
 		dispatcher.forward(request, response);
+
 		return;
 	}
 
@@ -57,6 +58,7 @@ public class LoginServlet extends HttpServlet {
 			UserLogic logic;
 			logic = new UserLogic();
 			UserModel user = logic.find(email, password);
+
 			if (user == null) {
 				// ユーザーが見つからなかったときは、エラーメッセージをリクエストスコープに設定する。
 				request.setAttribute("error", MessageSettings.MSG_LOGIN_FAILURE);
@@ -70,20 +72,27 @@ public class LoginServlet extends HttpServlet {
 				// ログインページへフォワードする。
 				RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.LOGIN_JSP);
 				dispatcher.forward(request, response);
+
 				return;
 			}
+
 			// ユーザーが見つかったときは、ユーザーモデルをセッションに保存し、メインページへリダイレクトする。
 			// ユーザーモデルがセッションに保存されていることでログイン状態を保持する。
 			// セッションからユーザーモデルを削除することでログアウトとする。
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
+
+			// Mainへリダイレクトする。
 			response.sendRedirect(request.getContextPath() + "/Main");
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}

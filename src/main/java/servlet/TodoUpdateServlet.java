@@ -44,9 +44,10 @@ public class TodoUpdateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			// idがint型でなかったら、メインページへリダイレクトする。
+			// idがint型でなかったら、Mainへリダイレクトする。
 			if (!ValidationUtil.isInteger(request.getParameter("id"))) {
 				response.sendRedirect(request.getContextPath() + "/Main");
+
 				return;
 			}
 
@@ -54,11 +55,15 @@ public class TodoUpdateServlet extends HttpServlet {
 			TodoItemLogic logic;
 			logic = new TodoItemLogic();
 
+			// セッションスコープに保存されたユーザー情報を取得する。
 			HttpSession session = request.getSession();
 			UserModel user = (UserModel) session.getAttribute("user");
+
+			// 指定ID、指定ユーザーIDのTODOリストを取得する。
 			TodoItemModel model = logic.find(Integer.parseInt(request.getParameter("id")), user.getId());
 
 			if (model == null) {
+				// TODOリストを取得できなかったら、Mainにリダイレクトする。
 				response.sendRedirect(request.getContextPath() + "/Main");
 				return;
 			}
@@ -67,12 +72,15 @@ public class TodoUpdateServlet extends HttpServlet {
 			request.setAttribute("todoItem", model);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todoUpdate.jsp");
 			dispatcher.forward(request, response);
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}
@@ -87,30 +95,37 @@ public class TodoUpdateServlet extends HttpServlet {
 			// idがine型でないときは、無条件でMainページ送りにする。
 			if (!ValidationUtil.isInteger(request.getParameter("id"))) {
 				response.sendRedirect(request.getContextPath() + "/Main");
+
 				return;
 			}
+
 			// リクエストパラメータ
 			int id = Integer.parseInt(request.getParameter("id"));
 			String item = request.getParameter("todoItem");
 			String registrationDate = request.getParameter("registrationDate");
 			String expirationDate = request.getParameter("expirationDate");
 			String finishedDate = null;
+
 			if (request.getParameter("finishedDate") != null) {
 				java.util.Date date = new java.util.Date();
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				finishedDate = format.format(date);
 			}
+
 			String isDeleted = "0";
+
 			if (request.getParameter("isDeleted") != null) {
 				isDeleted = "1";
 			}
 
 			// バリデーションチェック
 			TodoValidation validate = new TodoValidation(request);
-			Map<String, String> error = validate.validate();
+			Map<String, String> errors = validate.validate();
+
 			// バリデーションエラーがあった時
 			if (validate.hasErrors()) {
-				request.setAttribute("error", error);
+				request.setAttribute("errors", errors);
+
 				// リクエストパラメータをMapに保存してformのvalue値に使う
 				Map<String, String> todoItem = new HashMap<String, String>();
 				todoItem.put("todoItem", item);
@@ -123,6 +138,7 @@ public class TodoUpdateServlet extends HttpServlet {
 				// フォワード
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todoUpdate.jsp");
 				dispatcher.forward(request, response);
+
 				return;
 			}
 
@@ -132,36 +148,45 @@ public class TodoUpdateServlet extends HttpServlet {
 
 			// リクエストパラメータをTODOモデルに設定する。
 			TodoItemModel todoItem = new TodoItemModel();
+
 			todoItem.setId(id);
 			todoItem.setUserId(user.getId());
 			todoItem.setRegistrationDate(java.sql.Date.valueOf(registrationDate));
 			todoItem.setExpirationDate(java.sql.Date.valueOf(expirationDate));
+
 			if (finishedDate == null) {
 				todoItem.setFinishedDate(null);
 			} else {
 				todoItem.setFinishedDate(Date.valueOf(finishedDate));
 			}
+
 			todoItem.setTodoItem(item);
 			todoItem.setIsDeleted(Integer.parseInt(isDeleted));
 
 			// TODOを更新する
 			TodoItemLogic logic;
 			logic = new TodoItemLogic();
+
 			if (!logic.update(todoItem)) {
 				// エラーがあったときは、Mainへフォワードする
 				request.setAttribute("todoItem", todoItem);
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
 				dispatcher.forward(request, response);
+
 				return;
 			}
+
 			// Mainへリダイレクト
 			response.sendRedirect(request.getContextPath() + "/Main");
+
 			return;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+
 			// エラーページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher(PageSettings.PAGE_ERROR);
 			dispatcher.forward(request, response);
+
 			return;
 		}
 	}
