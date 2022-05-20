@@ -25,7 +25,7 @@ public class DBConnection implements AutoCloseable {
 		// JDBCドライバを読み込み
 		Class.forName(DatabaseSettings.DRIVER_NAME);
 
-		// データベースコネクションをプロパティに保存
+		// データベースコネクションをフィールドに保存
 		this.connection = DriverManager.getConnection(DatabaseSettings.JDBC_URL, DatabaseSettings.DB_USER,
 				DatabaseSettings.DB_PASS);
 	}

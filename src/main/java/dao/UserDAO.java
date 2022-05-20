@@ -36,7 +36,7 @@ public class UserDAO {
 					// UserModelのインスタンスを生成する。
 					UserModel model = new UserModel();
 
-					// プロパティに値を設定する。
+					// フィールドに値を設定する。
 					model.setId(rs.getInt("id"));
 					model.setEmail(rs.getString("email"));
 					model.setPassword(rs.getString("todo_item"));
@@ -81,7 +81,7 @@ public class UserDAO {
 				try (ResultSet rs = stmt.executeQuery()) {
 					// レコードが存在するとき、
 					if (rs.next()) {
-						//プロパティに値を設定する。
+						// フィールドに値を設定する。
 						model.setId(rs.getInt("id"));
 						model.setEmail(rs.getString("email"));
 						model.setPassword(rs.getString("todo_item"));
