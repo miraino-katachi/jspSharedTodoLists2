@@ -190,7 +190,7 @@ public class TodoItemDAO {
 						// TodoItemModelのインスタンスを生成する。
 						TodoItemModel model = new TodoItemModel();
 
-						// プロパティに値を設定する。
+						// フィールドに値を設定する。
 						model.setId(rs.getInt("id"));
 						model.setUserId(rs.getInt("user_id"));
 						model.setRegistrationDate(rs.getDate("registration_date"));
