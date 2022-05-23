@@ -22,7 +22,7 @@ public class TodoItemLogic {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public boolean crate(TodoItemModel model) throws ClassNotFoundException, SQLException {
+	public boolean create(TodoItemModel model) throws ClassNotFoundException, SQLException {
 		try (DBConnection db = new DBConnection()) {
 			Connection conn = db.getInstance();
 			TodoItemDAO dao = new TodoItemDAO();
