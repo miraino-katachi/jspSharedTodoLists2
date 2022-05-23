@@ -117,9 +117,9 @@ public class TodoRegisterServlet extends HttpServlet {
 			TodoItemLogic logic;
 			logic = new TodoItemLogic();
 
-			if (!logic.crate(todoItem)) {
-				// エラーがあったときは、Mainへフォワードする。
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
+			if (!logic.create(todoItem)) {
+				// エラーがあったときは、todoRegister.jspへフォワードする。
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todoRegister.jsp");
 				request.setAttribute("todoItem", todoItem);
 				dispatcher.forward(request, response);
 
