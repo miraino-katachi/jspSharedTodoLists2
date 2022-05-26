@@ -39,7 +39,7 @@ public class UserDAO {
 					// フィールドに値を設定する。
 					model.setId(rs.getInt("id"));
 					model.setEmail(rs.getString("email"));
-					model.setPassword(rs.getString("todo_item"));
+					model.setPassword(rs.getString("password"));
 					model.setName(rs.getString("name"));
 					model.setIsDeleted(rs.getInt("is_deleted"));
 					model.setCreatedAt(rs.getTimestamp("created_at"));
@@ -84,7 +84,7 @@ public class UserDAO {
 						// フィールドに値を設定する。
 						model.setId(rs.getInt("id"));
 						model.setEmail(rs.getString("email"));
-						model.setPassword(rs.getString("todo_item"));
+						model.setPassword(rs.getString("password"));
 						model.setName(rs.getString("name"));
 						model.setIsDeleted(rs.getInt("is_deleted"));
 						model.setCreatedAt(rs.getTimestamp("created_at"));
