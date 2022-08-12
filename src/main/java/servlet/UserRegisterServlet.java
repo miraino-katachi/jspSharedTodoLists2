@@ -106,7 +106,7 @@ public class UserRegisterServlet extends HttpServlet {
 				break;
 			}
 
-			// リクエストスコープにMapに保存したリクエストパラメータを保存する。
+			// リクエストスコープにユーザーモデルを保存する。
 			request.setAttribute("user", user);
 
 			// ユーザー登録ページへフォワードする。
