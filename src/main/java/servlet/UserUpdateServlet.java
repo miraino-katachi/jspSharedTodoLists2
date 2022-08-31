@@ -73,7 +73,7 @@ public class UserUpdateServlet extends HttpServlet {
 				user.put("name", name);
 				request.setAttribute("user", user);
 
-				// ユーザー登録ページへフォワードして終了する。
+				// ユーザー更新ページへフォワードして終了する。
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userUpdate.jsp");
 				dispatcher.forward(request, response);
 				return;
@@ -116,7 +116,7 @@ public class UserUpdateServlet extends HttpServlet {
 			// リクエストスコープにユーザーモデルを保存する。
 			request.setAttribute("user", user);
 
-			// ユーザー登録ページへフォワードする。
+			// ユーザー更新ページへフォワードする。
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/userUpdate.jsp");
 			dispatcher.forward(request, response);
 
