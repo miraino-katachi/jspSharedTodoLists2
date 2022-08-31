@@ -91,7 +91,7 @@ public class UserUpdateServlet extends HttpServlet {
 			user.setPassword(password);
 			user.setName(name);
 
-			// ユーザーをする。
+			// ユーザーを更新する。
 			UserLogic logic;
 			logic = new UserLogic();
 			int ret = logic.update(user);
