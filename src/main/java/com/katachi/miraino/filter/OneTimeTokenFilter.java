@@ -25,7 +25,7 @@ public class OneTimeTokenFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		// getMethod()メソッド、getSession()メソッドが使えるように、
-		// ServletResponseクラスオブジェクトをHttpServletRequestクラスオブジェクトにキャストする。
+		// ServletRequestクラスオブジェクトをHttpServletRequestクラスオブジェクトにキャストする。
 		HttpServletRequest req = (HttpServletRequest) request;
 
 		// ワンタイムトークンを生成してセッションに保存する。
