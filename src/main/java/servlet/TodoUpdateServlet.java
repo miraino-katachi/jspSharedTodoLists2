@@ -128,6 +128,7 @@ public class TodoUpdateServlet extends HttpServlet {
 
 				// リクエストパラメータをMapに保存してformのvalue値に使う
 				Map<String, String> todoItem = new HashMap<String, String>();
+				todoItem.put("id", String.valueOf(id));
 				todoItem.put("todoItem", item);
 				todoItem.put("registrationDate", registrationDate);
 				todoItem.put("expirationDate", expirationDate);
